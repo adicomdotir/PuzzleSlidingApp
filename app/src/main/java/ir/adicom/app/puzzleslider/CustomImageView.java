@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.Random;
@@ -126,14 +127,16 @@ public class CustomImageView extends ImageView {
         int offset = 5;
 
         Paint p1 = new Paint();
-        p1.setColor(Color.rgb(200,200,180));
+        p1.setColor(Color.WHITE);
         p1.setTextSize(50);
         Paint paint = new Paint();
-        paint.setColor(getResources().getColor(R.color.colorAccent));
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 String title = "" + array[(i * 4 + j)];
                 if (title.equals("-1") == false) {
+                    paint.setColor(getResources().getColor(R.color.colorAccent));
+                    if (array[(i * 4 + j)] == i*4+j+1)
+                        paint.setColor(Color.GREEN);
                     // the display area.
                     Rect areaRect = new Rect(j * len + offset, i * len + offset, j * len + len - offset, i * len + len - offset);
                     canvas.drawRect(areaRect, paint);
@@ -147,6 +150,20 @@ public class CustomImageView extends ImageView {
                     canvas.drawText(title, bounds.left, bounds.top - p1.ascent(), p1);
                 }
             }
+        }
+
+        if (checkEnd()) {
+            Toast.makeText(getContext(),"You Win", Toast.LENGTH_SHORT).show();
+            init();
+        }
+    }
+
+    public boolean checkEnd() {
+        for (int i=0; i<15; i++) {
+            if(array[i]!=i+1)
+                return false;
+        }
+        return true;
     }
 
     private void shuffleArray(int[] array) {
